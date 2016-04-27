@@ -91,8 +91,6 @@ module.exports = class VideoEncoder extends Task {
    * @return Promise
    */
   run () {
-    super.run()
-
     return doWork(this.payload)
   }
 
@@ -102,8 +100,6 @@ module.exports = class VideoEncoder extends Task {
    * stop).
    */
   interrupt () {
-    super.interrupt()
-
     this.log.warn('only encoded', this.currentIndex, 'out of', this.totalItems, 'frames')
   }
 
@@ -113,8 +109,6 @@ module.exports = class VideoEncoder extends Task {
    * @return Promise
    */
   finalize () {
-    super.finalize()
-
     return doCleanup(this.payload)
   }
 }
