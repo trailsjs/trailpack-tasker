@@ -15,6 +15,8 @@ $ npm install --save trailpack-tasker
 
 ## Configure
 
+### Add Trailpack
+
 ```js
 // config/main.js
 module.exports = {
@@ -24,6 +26,8 @@ module.exports = {
   ]
 }
 ```
+
+### Configure Tasker Settings
 
 ```js
 // config/tasker.js
@@ -62,6 +66,27 @@ module.exports = {
   worker: process.env.WORKER || false
 }
 ```
+
+### Configure `worker` Environment
+
+```js
+// config/env/worker.js
+module.exports = {
+  main: {
+
+    /**
+     * Only load the packs needed by the workers
+     */
+    packs: [
+      require('trailpack-core'),
+      require('trailpack-tasker')
+    ]
+  }
+}
+```
+
+If the worker profiles each require more granular environment configurations,
+create `worker-cpuBound`, `worker-memoryBound`, etc. environments.
 
 ## Usage
 
