@@ -75,13 +75,13 @@ module.exports = class VideoEncoder extends Task {
 
   /**
    * "payload" is the message from RabbitMQ, and contains all the information
-   * the worker needs to do its job. By default, sets this.payload.
+   * the worker needs to do its job. By default, sets this.payload and this.app.
    *
    * @param payload.videoFormat
    * @param payload.videoBuffer
    */
-  constructor (payload) {
-    super(payload)
+  constructor (app, payload) {
+    super(app, payload)
   }
 
   /**
