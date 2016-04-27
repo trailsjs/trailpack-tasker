@@ -41,6 +41,10 @@ module.exports = {
       tasks: [ 'VideoEncoder', 'hiCpuTask2' ]
     }
   },
+
+  /**
+   * Set RabbitMQ connection info
+   */
   rabbitmq: {
     exchange: process.env.TASKER_EXCHANGE,
     host: 'localhost',
@@ -112,6 +116,16 @@ module.exports = class VideoEncoder extends Task {
     doCleanup(this.payload)
   }
 }
+```
+
+## Deployment
+
+An example [Procfile](https://devcenter.heroku.com/articles/procfile) may look like:
+
+```
+web: npm start
+memoryBound: NODE_ENV=worker WORKER=memoryBound npm start
+cpuBound: NODE_ENV=worker WORKER=cpuBound npm start
 ```
 
 ## License
