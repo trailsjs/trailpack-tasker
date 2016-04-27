@@ -32,7 +32,7 @@ module.exports = {
   /**
    * Define worker profiles. Each worker of a given type listens for the
    * "tasks" defined in its profile below. The task names represent a Task
-   * defined in api.tasks
+   * defined in api.services.tasks
    */
   profiles: {
     memoryBound: {
@@ -65,10 +65,10 @@ module.exports = {
 
 ## Usage
 
-Define tasks in `api.tasks`. Each task is run in a separate process.
+Define tasks in `api.services.tasks`. Each task is run in a separate process.
 
 ```js
-// api/tasks/VideoEncoder.js
+// api/services/tasks/VideoEncoder.js
 
 const Task = require('trailpack-tasker').Task
 module.exports = class VideoEncoder extends Task {
