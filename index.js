@@ -1,6 +1,7 @@
 'use strict'
 
 const Trailpack = require('trailpack')
+const lib = require('./lib')
 
 module.exports = class TaskerTrailpack extends Trailpack {
 
@@ -34,3 +35,4 @@ module.exports = class TaskerTrailpack extends Trailpack {
   }
 }
 
+exports.Task = lib.Task
