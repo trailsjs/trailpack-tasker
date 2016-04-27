@@ -28,6 +28,7 @@ module.exports = {
 ```js
 // config/tasker.js
 module.exports = {
+
   /**
    * Define worker profiles. Each worker of a given type listens for the
    * "tasks" defined in its profile below. The task names represent a Task
@@ -71,9 +72,10 @@ Define tasks in `api.tasks`. Each task is run in a separate process.
 
 const Task = require('trailpack-tasker').Task
 module.exports = class VideoEncoder extends Task {
+
   /**
    * "payload" is the message from RabbitMQ, and contains all the information
-   * the worker needs to do its job.
+   * the worker needs to do its job. By default, sets this.payload.
    *
    * @param payload.videoFormat
    * @param payload.videoBuffer
@@ -84,7 +86,7 @@ module.exports = class VideoEncoder extends Task {
 
   /**
    * Do work here. When the work is finished (the Promise is resolved), send
-   * "ack" to the worker queue.
+   * "ack" to the worker queue. You must override this method.
    *
    * @return Promise
    */
@@ -113,7 +115,7 @@ module.exports = class VideoEncoder extends Task {
   finalize () {
     super.finalize()
 
-    doCleanup(this.payload)
+    return doCleanup(this.payload)
   }
 }
 ```
