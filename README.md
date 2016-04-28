@@ -51,12 +51,12 @@ module.exports = {
    * Set RabbitMQ connection info
    */
   rabbitmq: {
-    exchange: process.env.TASKER_EXCHANGE,
-    host: 'localhost',
-    port: 5672,
-    username: 'guest',
-    password: 'guest',
-    ssl: true
+
+    /**
+     * The RabbitMQ connection string.
+     * See: https://www.rabbitmq.com/uri-spec.html
+     */
+    uri: amqp://user:pass@hostname:5672/exchange
   },
 
   /**
