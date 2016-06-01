@@ -16,17 +16,21 @@
   ],
   "dependencies": {
     "amqplib": "^0.4.1",
-    "trailpack": "latest",
-    "trails-service": "^1.0.0-beta-2"
+    "joi": "^8.1.1",
+    "lodash": "^4.13.1",
+    "node-uuid": "^1.4.7",
+    "trailpack": "^1.0.4",
+    "trails-service": "^1.0.0-beta-2",
+    "wascally": "^0.2.10"
   },
   "devDependencies": {
-    "lodash": "^4.11.1",
-    "trails": "latest",
     "eslint": "^2.4",
     "eslint-config-trails": "^1.0.4",
+    "lodash": "^4.11.1",
     "mocha": "^2.4.5",
-    "smokesignals": "^1.0.9",
-    "trailpack-core": "^1.0.0-beta-6"
+    "smokesignals": "^1.2.2",
+    "trailpack-core": "^1.0.0",
+    "trails": "latest"
   },
   "scripts": {
     "test": "eslint . && mocha"
