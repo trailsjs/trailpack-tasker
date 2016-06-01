@@ -26,7 +26,7 @@ module.exports = class TestTask3 extends Task {
         }
         else {
           this.app.log.verbose('task was not interrupted, acking')
-          this.message.ack()
+          this.ack()
         }
       }
       catch (e) {
@@ -41,7 +41,7 @@ module.exports = class TestTask3 extends Task {
       try {
         // mark this task as interrupted
         this.interrupted = true
-        // reject original message
+        // interruptCount is used for unit testing purposes
         if (!this.app.interruptCount) {
           this.app.interruptCount = 1
         }
@@ -49,8 +49,9 @@ module.exports = class TestTask3 extends Task {
           this.app.interruptCount++
         }
         this.app.log.info('rejecting original message')
-        this.message.reject()
-        // ack new message
+        // reject the task
+        this.reject()
+        // ack the interrupt message
         message.ack()
       }
       catch (e) {

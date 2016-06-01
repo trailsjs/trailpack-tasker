@@ -17,7 +17,7 @@ module.exports = class TestTask2 extends Task {
     else {
       this.app.callCount++
     }
-    this.message.ack()
+    this.ack()
   }
 
 }

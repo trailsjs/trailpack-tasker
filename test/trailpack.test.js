@@ -17,6 +17,13 @@ describe('Trailpack', () => {
     }, 500)
   })
 
+  beforeEach(() => {
+    global.app.callCount = 0
+    global.app.finalizeCount = 0
+    global.app.interruptCount = 0
+    global.app.testValue = undefined
+  })
+
   it('should be loaded into the app.packs collection', () => {
     assert(pack)
   })
@@ -26,6 +33,7 @@ describe('Trailpack', () => {
     global.app.tasker.publish('TestTask', { testValue })
     setTimeout(() => {
       assert.equal(global.app.callCount, 1)
+      assert.equal(global.app.finalizeCount, 1)
       assert.equal(global.app.testValue, testValue)
       done()
     }, 10)
@@ -36,7 +44,7 @@ describe('Trailpack', () => {
     // OtherTestTask is in a different profile
     global.app.tasker.publish('OtherTestTask', { testValue })
     setTimeout(() => {
-      assert.equal(global.app.callCount, 1)
+      assert.equal(global.app.callCount, 0)
       done()
     }, 10)
   })
@@ -45,7 +53,7 @@ describe('Trailpack', () => {
     const testValue = 893495872394
     global.app.tasker.publish('TestTask2', { testValue })
     setTimeout(() => {
-      assert.equal(global.app.callCount, 2)
+      assert.equal(global.app.callCount, 1)
       assert.equal(global.app.testValue, testValue)
       done()
     }, 10)
@@ -73,5 +81,28 @@ describe('Trailpack', () => {
             })
         }, 100)
       })
+  })
+
+  it('should call finalize even if an error is thrown in run', done => {
+    const task = 'ErrorTestTask'
+    const testValue = 9362381
+    global.app.tasker.publish(task, { testValue })
+    setTimeout(() => {
+      assert.equal(global.app.callCount, 1)
+      assert.equal(global.app.finalizeCount, 1)
+      assert.equal(global.app.testValue, testValue)
+      done()
+    }, 100)
+  })
+
+  it('should only send a single acknowledgement, even if .ack is called more than once', done => {
+    const task = 'MultiAckTest'
+    const testValue = 4313451
+    global.app.tasker.publish(task, { testValue })
+    setTimeout(() => {
+      assert.equal(global.app.callCount, 1)
+      assert.equal(global.app.finalizeCount, 1)
+      done()
+    }, 100)
   })
 })

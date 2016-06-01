@@ -2,7 +2,7 @@
 
 const Task = require('../lib/Task')
 
-module.exports = class TestTask extends Task {
+module.exports = class MultiAckTest extends Task {
 
   constructor (app, message) {
     super(app, message)
@@ -17,6 +17,11 @@ module.exports = class TestTask extends Task {
     else {
       this.app.callCount++
     }
+    this.ack()
+    // simulate more than one ack/nack/reject
+    this.ack()
+    this.nack()
+    this.reject()
     this.ack()
   }
 

@@ -20,7 +20,7 @@ module.exports = class OtherTestTask extends Task {
     else {
       this.app.callCount++
     }
-    this.message.ack()
+    this.ack()
   }
 
 }
