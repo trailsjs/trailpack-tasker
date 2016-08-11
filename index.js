@@ -3,16 +3,13 @@
 const Trailpack = require('trailpack')
 const lib = require('./lib')
 const _ = require('lodash')
-const rabbit = require('wascally')
+const rabbit = require('rabbot')
+// automatically nack exceptions in handlers
+rabbit.nackOnError()
 const joi = require('joi')
 const config = require('./lib/config')
 const Client = require('./lib/Client')
 const TaskerUtils = require('./lib/Util.js')
-
-rabbit.shutdown = function(app){
-  rabbit.clearAckInterval()
-  return rabbit.closeAll()
-}
 
 module.exports = class TaskerTrailpack extends Trailpack {
 
@@ -35,9 +32,9 @@ module.exports = class TaskerTrailpack extends Trailpack {
    * configure rabbitmq exchanges, queues, bindings and handlers
    */
   configure() {
-    const taskerConfig = this.app.config.tasker
+    let taskerConfig = this.app.config.tasker
     const profile = getWorkerProfile(taskerConfig)
-    configureExchangesAndQueues(profile, taskerConfig)
+    taskerConfig = configureExchangesAndQueues(profile, taskerConfig)
 
     this.app.tasker = new Client(this.app, rabbit, taskerConfig.exchangeName)
     TaskerUtils.registerTasks(profile, this.app, rabbit)
@@ -110,7 +107,7 @@ function configureExchangesAndQueues(profile, taskerConfig) {
   }, {
     exchange: exchangeName,
     target: interruptQueueName,
-    keys: profile.tasks.map(task => { return task + '.interrupt' })
+    keys: profile.tasks.map(task => task + '.interrupt')
   }]
 
   return taskerConfig

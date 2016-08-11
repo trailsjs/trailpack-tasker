@@ -6,6 +6,7 @@
 [![Code Climate][codeclimate-image]][codeclimate-url]
 
 Easily set up background workers with [RabbitMQ](https://www.rabbitmq.com/) and [Trails](http://trailsjs.io).
+This project is built on top of the [rabbot](https://github.com/arobson/rabbot) RabbitMQ client.
 
 ## Install
 
@@ -36,7 +37,8 @@ module.exports = {
   /**
    * Define worker profiles. Each worker of a given type listens for the
    * "tasks" defined in its profile below. The task names represent a Task
-   * defined in api.services.tasks
+   * defined in api.services.tasks. Note that 'memoryBound' and 'cpuBound' are
+   * arbitrary names.
    */
   profiles: {
     memoryBound: {
@@ -64,6 +66,20 @@ module.exports = {
      pass: process.env.TASKER_RMQ_PASS,
      port: process.env.TASKER_RMQ_PORT,
      vhost: process.env.TASKER_RMQ_VHOST
+
+     /**
+     * Connection information could also be passed via uri
+     */
+     uri: process.env.TASKER_RMQ_URI
+
+     /**
+      * Additional, optional connection options (default values shown)
+      */
+      heartbeat: 30,
+      timeout:, // this is the connection timeout (in milliseconds, per connection attempt), and there is no default
+      failAFter: 60, // limits how long rabbot will attempt to connect (in seconds, across all connection attempts). Defaults to 60
+      retryLimit: 3, // limits number of consecutive failed attempts
+
   },
 
   /**

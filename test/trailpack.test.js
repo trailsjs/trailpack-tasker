@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const rabbit = require('wascally')
+const rabbit = require('rabbot')
 
 describe('Trailpack', () => {
   let pack
@@ -10,11 +10,14 @@ describe('Trailpack', () => {
     pack = global.app.packs.tasker
   })
 
-  after(() => {
-    // give wascally time to run batch acks
-    setTimeout(() => {
-      rabbit.shutdown(global.app)
-    }, 500)
+  after(function() {
+    this.timeout(10000)
+    // need a slight delay here to let rabbot finish batch acks
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(rabbit.shutdown())
+      }, 2000)
+    })
   })
 
   beforeEach(() => {
@@ -69,7 +72,7 @@ describe('Trailpack', () => {
 
   it('should emit a cancel event', done => {
     const task = 'TestTask3'
-    return global.app.tasker.publish(task, {})
+    global.app.tasker.publish(task, {})
       .then(taskId => {
         setTimeout(() => {
           return global.app.tasker.cancelTask(task, taskId)
@@ -95,7 +98,7 @@ describe('Trailpack', () => {
     }, 100)
   })
 
-  it('should only send a single acknowledgement, even if .ack is called more than once', done => {
+  it('should send a single acknowledgement, even if .ack is called more than once', done => {
     const task = 'MultiAckTest'
     const testValue = 4313451
     global.app.tasker.publish(task, { testValue })
