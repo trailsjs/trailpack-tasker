@@ -6,6 +6,7 @@
 [![Code Climate][codeclimate-image]][codeclimate-url]
 
 Easily set up background workers with [RabbitMQ](https://www.rabbitmq.com/) and [Trails](http://trailsjs.io).
+This project is built on top of the [rabbot](https://github.com/arobson/rabbot) RabbitMQ client.
 
 ## Install
 
@@ -36,7 +37,8 @@ module.exports = {
   /**
    * Define worker profiles. Each worker of a given type listens for the
    * "tasks" defined in its profile below. The task names represent a Task
-   * defined in api.services.tasks
+   * defined in api.services.tasks. Note that 'memoryBound' and 'cpuBound' are
+   * arbitrary names.
    */
   profiles: {
     memoryBound: {
@@ -50,21 +52,41 @@ module.exports = {
   /**
    * Set RabbitMQ connection info
    */
-  rabbitmq: {
-    exchange: process.env.TASKER_EXCHANGE,
+  connection: {
+    exchange: process.env.TASKER_EXCHANGE, // optional, defaults to `tasker-work-x`
+    workQueueName: process.env.TASKER_WORK_QUEUE, // optional, defaults to `tasker-work-q`
+    interruptQueueName: process.env.TASKER_INTERRUPT_QUEUE, // optional, defaults to `tasker-interrupt-q`
 
     /**
-     * The RabbitMQ connection string.
+     * The RabbitMQ connection information.
      * See: https://www.rabbitmq.com/uri-spec.html
      */
-    uri: 'amqp://user:pass@hostname:5672/exchange'
+     host: process.env.TASKER_RMQ_HOST,
+     user: process.env.TASKER_RMQ_USER,
+     pass: process.env.TASKER_RMQ_PASS,
+     port: process.env.TASKER_RMQ_PORT,
+     vhost: process.env.TASKER_RMQ_VHOST
+
+     /**
+     * Connection information could also be passed via uri
+     */
+     uri: process.env.TASKER_RMQ_URI
+
+     /**
+      * Additional, optional connection options (default values shown)
+      */
+      heartbeat: 30,
+      timeout:, // this is the connection timeout (in milliseconds, per connection attempt), and there is no default
+      failAFter: 60, // limits how long rabbot will attempt to connect (in seconds, across all connection attempts). Defaults to 60
+      retryLimit: 3, // limits number of consecutive failed attempts
+
   },
 
   /**
    * Set worker to subscribe to tasks in the matching profile (tasker.profiles).
-   * If false, the application will not subscribe to any tasks.
+   * If process.env.WORKER does not match a profile, the application will not subscribe to any tasks
    */
-  worker: process.env.WORKER || false
+  worker: process.env.WORKER
 }
 ```
 
@@ -140,6 +162,19 @@ module.exports = class VideoEncoder extends Task {
 }
 ```
 
+
+To start a task, publish a message via the `app.tasker` interface: 
+```
+const taskId = app.tasker.publish('VideoEncoder', { vidoeUrl: 'http://...' }
+```
+
+To interrupt a task in progress, use the `taskId` that is returned from app.tasker.publish(..):
+```
+app.tasker.cancel('VideoEncoder', taskId)
+```
+
+
+
 ## Deployment
 
 An example [Procfile](https://devcenter.heroku.com/articles/procfile) may look like:
@@ -149,6 +184,7 @@ web: npm start
 memoryBound: NODE_ENV=worker WORKER=memoryBound npm start
 cpuBound: NODE_ENV=worker WORKER=cpuBound npm start
 ```
+
 
 ## License
 MIT
