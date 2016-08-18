@@ -10,6 +10,8 @@ const joi = require('joi')
 const config = require('./lib/config')
 const Client = require('./lib/Client')
 const TaskerUtils = require('./lib/Util.js')
+const Path = require('path')
+const fs = require('fs')
 
 module.exports = class TaskerTrailpack extends Trailpack {
 
@@ -18,7 +20,6 @@ module.exports = class TaskerTrailpack extends Trailpack {
    */
   validate() {
     this.app.config.tasker = _.defaultsDeep(this.app.config.tasker, config.defaults)
-    this.app.log.info('tasker config', this.app.config.tasker)
     return new Promise((resolve, reject) => {
       joi.validate(this.app.config.tasker, config.schema, (err, value) => {
         if (err) return reject(new Error('Tasker Configuration: ' + err))
@@ -38,6 +39,21 @@ module.exports = class TaskerTrailpack extends Trailpack {
 
     this.app.tasker = new Client(this.app, rabbit, taskerConfig.exchangeName)
     TaskerUtils.registerTasks(profile, this.app, rabbit)
+
+    return new Promise((resolve, reject) => {
+      const tasksPath = Path.join(__dirname, '../../api/tasks')
+      fs.stat(tasksPath, (err, fileStats) => {
+        if (err || !fileStats.isDirectory()) {
+          this.app.api.tasks = this.app.api.tasks || {}
+          resolve()
+        }
+        else {
+          this.app.api.tasks = require(tasksPath)
+          resolve()
+        }
+      })
+
+    })
 
   }
 
@@ -66,7 +82,7 @@ function getWorkerProfile(taskerConfig) {
   const profileName = taskerConfig.worker
 
   if (!profileName || !taskerConfig.profiles[profileName]) {
-    return
+    return { tasks: [] }
   }
 
   return taskerConfig.profiles[profileName]

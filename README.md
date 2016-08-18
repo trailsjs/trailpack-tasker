@@ -122,14 +122,14 @@ const Task = require('trailpack-tasker').Task
 module.exports = class VideoEncoder extends Task {
 
   /**
-   * "payload" is the message from RabbitMQ, and contains all the information
-   * the worker needs to do its job. By default, sets this.payload and this.app.
+   * "message" is the message from RabbitMQ, and contains all the information
+   * the worker needs to do its job. By default, sets this.message and this.app.
    *
-   * @param payload.videoFormat
-   * @param payload.videoBuffer
+   * @param message.body.videoFormat
+   * @param message.body.videoBuffer
    */
-  constructor (app, payload) {
-    super(app, payload)
+  constructor (app, message) {
+    super(app, message)
   }
 
   /**
@@ -139,7 +139,7 @@ module.exports = class VideoEncoder extends Task {
    * @return Promise
    */
   run () {
-    return doWork(this.payload)
+    return doWork(this.message)
   }
 
   /**
@@ -157,7 +157,7 @@ module.exports = class VideoEncoder extends Task {
    * @return Promise
    */
   finalize () {
-    return doCleanup(this.payload)
+    return doCleanup(this.message)
   }
 }
 ```
