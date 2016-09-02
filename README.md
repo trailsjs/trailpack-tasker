@@ -111,25 +111,39 @@ module.exports = {
 If the worker profiles each require more granular environment configurations,
 create `worker-cpuBound`, `worker-memoryBound`, etc. environments.
 
+### Include tasks in the app object
+Create a directory `api/tasks`.  Any task definitions will be created as classes in this directory.
+Create  `api/tasks/index.js` to export all of the tasks.
+Include this directory in `api/index.js`.  Here is an example:
+```js
+// api/index.js
+
+exports.controllers = require('./controllers')
+exports.models = require('./models')
+exports.policies = require('./policies')
+exports.services = require('./services')
+exports.tasks = require('./tasks')
+```
+
 ## Usage
 
-Define tasks in `api.services.tasks`. Each task is run in a separate process.
+Define tasks in `api.tasks`.  Tasks are run by a worker processes.
 
 ```js
-// api/services/tasks/VideoEncoder.js
+// api/tasks/VideoEncoder.js
 
 const Task = require('trailpack-tasker').Task
 module.exports = class VideoEncoder extends Task {
 
   /**
-   * "payload" is the message from RabbitMQ, and contains all the information
-   * the worker needs to do its job. By default, sets this.payload and this.app.
+   * "message" is the message from RabbitMQ, and contains all the information
+   * the worker needs to do its job. By default, sets this.message and this.app.
    *
-   * @param payload.videoFormat
-   * @param payload.videoBuffer
+   * @param message.body.videoFormat
+   * @param message.body.videoBuffer
    */
-  constructor (app, payload) {
-    super(app, payload)
+  constructor (app, message) {
+    super(app, message)
   }
 
   /**
@@ -139,7 +153,7 @@ module.exports = class VideoEncoder extends Task {
    * @return Promise
    */
   run () {
-    return doWork(this.payload)
+    return doWork(this.message)
   }
 
   /**
@@ -157,7 +171,7 @@ module.exports = class VideoEncoder extends Task {
    * @return Promise
    */
   finalize () {
-    return doCleanup(this.payload)
+    return doCleanup(this.message)
   }
 }
 ```

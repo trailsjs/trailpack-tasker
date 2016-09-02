@@ -18,7 +18,6 @@ module.exports = class TaskerTrailpack extends Trailpack {
    */
   validate() {
     this.app.config.tasker = _.defaultsDeep(this.app.config.tasker, config.defaults)
-    this.app.log.info('tasker config', this.app.config.tasker)
     return new Promise((resolve, reject) => {
       joi.validate(this.app.config.tasker, config.schema, (err, value) => {
         if (err) return reject(new Error('Tasker Configuration: ' + err))
@@ -39,6 +38,7 @@ module.exports = class TaskerTrailpack extends Trailpack {
     this.app.tasker = new Client(this.app, rabbit, taskerConfig.exchangeName)
     TaskerUtils.registerTasks(profile, this.app, rabbit)
 
+    this.app.api.tasks = this.app.api.tasks || {}
   }
 
   /**
@@ -66,7 +66,7 @@ function getWorkerProfile(taskerConfig) {
   const profileName = taskerConfig.worker
 
   if (!profileName || !taskerConfig.profiles[profileName]) {
-    return
+    return { tasks: [] }
   }
 
   return taskerConfig.profiles[profileName]
