@@ -3,7 +3,7 @@
 const _ = require('lodash')
 const smokesignals = require('smokesignals')
 
-module.exports = _.defaultsDeep({
+const App = {
   pkg: {
     name: require('../package').name + '-test'
   },
@@ -21,14 +21,9 @@ module.exports = _.defaultsDeep({
     }
   },
   config: {
-    log: {
-      logger: new smokesignals.Logger('error')
-    },
     main: {
       packs: [
-        smokesignals.Trailpack,
-        require('trailpack-core'),
-        require('../')
+        require('../') // trailpack-express
       ]
     },
     tasker: {
@@ -44,4 +39,6 @@ module.exports = _.defaultsDeep({
       exchange: 'my-test-exchange-name'
     }
   }
-}, smokesignals.FailsafeConfig)
+}
+_.defaultsDeep(App, smokesignals.FailsafeConfig)
+module.exports = App
