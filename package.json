@@ -15,7 +15,7 @@
     "trailjs"
   ],
   "dependencies": {
-    "amqplib": "^0.4.1",
+    "amqplib": "^0.5.1",
     "joi": "^10.1.0",
     "lodash": "^4.17.4",
     "uuid": "^3.0.1",
@@ -24,8 +24,8 @@
     "trails-service": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^2.4",
-    "eslint-config-trails": "^1.0.4",
+    "eslint": "^3.13.1",
+    "eslint-config-trails": "^2.0.6",
     "mocha": "^3.0.2",
     "smokesignals": "^2.1.0",
     "trails": "^2.0.0"
