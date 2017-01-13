@@ -20,8 +20,7 @@
     "lodash": "^4.17.4",
     "uuid": "^3.0.1",
     "rabbot": "^1.0.8",
-    "trailpack": "^2.1.0",
-    "trails-service": "^2.0.0"
+    "trailpack": "^2.1.0"
   },
   "devDependencies": {
     "eslint": "^3.13.1",
