@@ -101,7 +101,6 @@ module.exports = {
      * Only load the packs needed by the workers
      */
     packs: [
-      require('trailpack-core'),
       require('trailpack-tasker')
     ]
   }
