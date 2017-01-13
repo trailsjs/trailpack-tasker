@@ -117,4 +117,4 @@ function configureExchangesAndQueues(profile, taskerConfig) {
 
 
 
-exports.Task = lib.Task
+module.exports.Task = lib.Task

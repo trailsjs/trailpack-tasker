@@ -3,7 +3,7 @@
 const _ = require('lodash')
 const smokesignals = require('smokesignals')
 
-module.exports = _.defaultsDeep({
+const App = {
   pkg: {
     name: require('../package').name + '-test'
   },
@@ -26,8 +26,6 @@ module.exports = _.defaultsDeep({
     },
     main: {
       packs: [
-        smokesignals.Trailpack,
-        require('trailpack-core'),
         require('../')
       ]
     },
@@ -44,4 +42,6 @@ module.exports = _.defaultsDeep({
       exchange: 'my-test-exchange-name'
     }
   }
-}, smokesignals.FailsafeConfig)
+}
+_.defaultsDeep(App, smokesignals.FailsafeConfig)
+module.exports = App
