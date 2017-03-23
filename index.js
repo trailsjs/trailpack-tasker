@@ -45,7 +45,9 @@ module.exports = class TaskerTrailpack extends Trailpack {
    * Establish connection to the RabbitMQ exchange, listen for tasks.
    */
   initialize() {
-    return Promise.resolve(rabbit.configure(this.app.config.tasker))
+    this.app.on('trails:ready', () => {
+      return Promise.resolve(rabbit.configure(this.app.config.tasker))
+    })
   }
 
   constructor(app) {
