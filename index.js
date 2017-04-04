@@ -33,12 +33,14 @@ module.exports = class TaskerTrailpack extends Trailpack {
   configure() {
     let taskerConfig = this.app.config.tasker
     const profile = getWorkerProfile(taskerConfig)
-    taskerConfig = configureExchangesAndQueues(profile, taskerConfig)
+    if (profile) {
+      taskerConfig = configureExchangesAndQueues(profile, taskerConfig)
 
-    this.app.tasker = new Client(this.app, rabbit, taskerConfig.exchangeName)
-    TaskerUtils.registerTasks(profile, this.app, rabbit)
+      this.app.tasker = new Client(this.app, rabbit, taskerConfig.exchangeName)
+      TaskerUtils.registerTasks(profile, this.app, rabbit)
 
-    this.app.api.tasks = this.app.api.tasks || {}
+      this.app.api.tasks = this.app.api.tasks || {}
+    }
   }
 
   /**
